@@ -1,3 +1,3 @@
 from imports import *
 
-choix_utilisateur = ""  
+choix_utilisateur = None

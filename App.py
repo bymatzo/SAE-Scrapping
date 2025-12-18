@@ -1,11 +1,12 @@
 from imports import *
-from variables import *
+import variables
 
 
 ctk.set_default_color_theme("Sources/pink.json")
 
 def combobox_callback(choice):
-    print("choix : ", choice)
+    print("choix : ", choice) 
+    variables.choix_utilisateur = choice
 
 class App(ctk.CTk):
     def __init__(self): 
