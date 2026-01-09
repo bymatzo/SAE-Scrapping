@@ -1,27 +1,23 @@
-# main.py
-
 from kworb.scraper import KworbScraper
 from kworb.navigator import KworbNavigator
 
+# 1️⃣ Initialisation du scraper et du navigateur
 scraper = KworbScraper()
 navigator = KworbNavigator(scraper)
 
-# 1) Page d'accueil
-home_links = navigator.get_links("/")
+# 2️⃣ Récupération des pays depuis la page /spotify/
+countries = navigator.get_countries_from_spotify()
 
-# 2) Aller vers Spotify
-spotify_links = navigator.filter_links(home_links, "spotify")
+# 3️⃣ Affichage des premiers pays
+print("Pays trouvés :")
+for country in countries[:10]:
+    print(f"{country['name']} -> {country['link']}")
 
-print("Liens Spotify :")
-for link in spotify_links:
-    print(link)
+# 4️⃣ Nombre total de pays trouvés
+print(f"\nTotal pays : {len(countries)}")
 
-# 3) Explorer les pays
-country_links = navigator.get_links("/spotify/country/")
 
-print("\nPays disponibles :")
-for link in country_links[:10]:
-    print(link)
+
 
 
 
