@@ -8,6 +8,15 @@ EXPORT_DIR = "exports_csv"
 os.makedirs(EXPORT_DIR, exist_ok=True)
 
 
+def clean_number_for_csv(value):
+    if value is None:
+        return "0,0"
+
+    value = str(value).replace(" ", "").replace("\u202f", "").replace("\xa0", "")
+    value = value.replace(".", ",")  # IMPORTANT pour Power BI FR
+    return value
+
+
 def export_artists_csv(artists, filename="artists.csv"):
     """
     Exporte les artistes avec leurs infos et points iTunes/plateformes
@@ -27,22 +36,22 @@ def export_artists_csv(artists, filename="artists.csv"):
             row = {
                 "name": artist.name,
                 "link": artist.link,
-                "streams_total": artist.streams_total,
-                "streams_daily": artist.streams_daily,
-                "streams_en_tant_que_numero_un": artist.streams_en_tant_que_numero_un,
-                "streams_solo": artist.streams_solo,
-                "streams_en_featuring": artist.streams_en_featuring,
+                "streams_total": clean_number_for_csv(artist.streams_total),
+                "streams_daily": clean_number_for_csv(artist.streams_daily),
+                "streams_en_tant_que_numero_un": clean_number_for_csv(artist.streams_en_tant_que_numero_un),
+                "streams_solo": clean_number_for_csv(artist.streams_solo),
+                "streams_en_featuring": clean_number_for_csv(artist.streams_en_featuring),
             }
             # Ajouter les points iTunes si disponibles
             if hasattr(artist, "itunes_points") and artist.itunes_points:
                 row.update({
-                    "Total Points": artist.itunes_points.get("Total Points", 0),
-                    "Apple Music": artist.itunes_points.get("Apple Music", 0),
-                    "Spotify": artist.itunes_points.get("Spotify", 0),
-                    "iTunes": artist.itunes_points.get("iTunes", 0),
-                    "YouTube": artist.itunes_points.get("YouTube", 0),
-                    "Shazam": artist.itunes_points.get("Shazam", 0),
-                    "Deezer": artist.itunes_points.get("Deezer", 0),
+                    "Total Points": clean_number_for_csv(artist.itunes_points.get("Total Points", 0)),
+                    "Apple Music": clean_number_for_csv(artist.itunes_points.get("Apple Music", 0)),
+                    "Spotify": clean_number_for_csv(artist.itunes_points.get("Spotify", 0)),
+                    "iTunes": clean_number_for_csv(artist.itunes_points.get("iTunes", 0)),
+                    "YouTube": clean_number_for_csv(artist.itunes_points.get("YouTube", 0)),
+                    "Shazam": clean_number_for_csv(artist.itunes_points.get("Shazam", 0)),
+                    "Deezer": clean_number_for_csv(artist.itunes_points.get("Deezer", 0)),
                     "Top Country": artist.itunes_points.get("Top Country", "")
                 })
             else:
@@ -76,8 +85,8 @@ def export_tracks_csv(artists, filename="tracks.csv"):
                     "artist_name": artist.name,
                     "title": track.title,
                     "link": track.link,
-                    "streams_total": track.streams_total,
-                    "streams_daily": track.streams_daily
+                    "streams_total": clean_number_for_csv(track.streams_total),
+                    "streams_daily": clean_number_for_csv(track.streams_daily)
                 })
 
 
@@ -106,7 +115,7 @@ def export_country_tracks_csv(countries_top_tracks, filename="country_tracks.csv
                     "position": track.position,
                     "artist": track.artist,
                     "title": track.title,
-                    "streams": track.streams,
-                    "streams_change": track.streams_change,
-                    "total": track.total
+                    "streams": clean_number_for_csv(track.streams),
+                    "streams_change": clean_number_for_csv(track.streams_change),
+                    "total": clean_number_for_csv(track.total)
                 })
