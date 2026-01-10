@@ -1,6 +1,6 @@
 # kworb/navigator.py
 
-from kworb.models import Artist, Track
+from kworb.models import Artist, Track, CountryTrack
 
 
 class KworbNavigator:
@@ -69,14 +69,18 @@ class KworbNavigator:
 
 
     def get_countries_from_spotify(self):
-        """ Récupère les noms et liens Daily & Weekly des pays depuis /spotify/ """
+        """Récupère les noms et liens Daily & Weekly des pays depuis /spotify/ avec URLs absolues"""
         soup = self.scraper.get_page("/spotify")
         if soup is None:
             return []
 
+        base_url = "https://kworb.net/spotify/"
         countries = []
 
-        for tr in soup.find_all("tr"):
+        for i, tr in enumerate(soup.find_all("tr")):
+            if i >= 50:  # limite à 50 pays
+                break
+
             tds = tr.find_all("td", class_="mp text")
             if len(tds) < 2:
                 continue
@@ -88,12 +92,18 @@ class KworbNavigator:
             weekly_link = None
 
             for a in links:
-                href = self.clean_link(a["href"])
+                href = self.clean_link(a["href"]).strip()
+
+                # Si c'est déjà un lien absolu, on garde, sinon on complète avec base_url
+                if href.startswith("http://") or href.startswith("https://"):
+                    full_href = href
+                else:
+                    full_href = base_url + href.lstrip("/")
 
                 if "_daily.html" in href:
-                    daily_link = href
+                    daily_link = full_href
                 elif "_weekly.html" in href:
-                    weekly_link = href
+                    weekly_link = full_href
 
             if daily_link or weekly_link:
                 countries.append({
@@ -103,6 +113,9 @@ class KworbNavigator:
                 })
 
         return countries
+
+
+
 
     def get_tracks_from_artist(self, artist_url: str):
         """Récupère les titres et leurs streams d'une page artiste"""
@@ -143,6 +156,64 @@ class KworbNavigator:
             tracks.append(track)
 
         return tracks
+    
+    def get_top_tracks_for_country(self, url: str, top_n: int = 100, table_id: str = "spotifydaily"):
+        """
+        Récupère les top tracks pour un pays sur la page Daily ou Weekly
+        - table_id: 'spotifydaily' ou 'spotifyweekly'
+        """
+        soup = self.scraper.get_page(url)
+        if soup is None:
+            return []
+
+        table = soup.find("table", id=table_id)
+        if not table:
+            return []
+
+        tbody = table.find("tbody")
+        if not tbody:
+            return []
+
+        tracks = []
+        for i, tr in enumerate(tbody.find_all("tr")):
+            if i >= top_n:
+                break
+
+            tds = tr.find_all("td")
+            if len(tds) < 7:  # minimum requis pour daily/weekly
+                continue
+
+            # Récupération de l'artiste et titre
+            artist_title_div = tds[2].find("div")
+            if not artist_title_div:
+                continue
+
+            # On prend le texte et on essaie de séparer artiste et titre
+            links = artist_title_div.find_all("a")
+            if len(links) >= 2:
+                artist_name = links[0].get_text(strip=True)
+                track_title = links[1].get_text(strip=True)
+            else:
+                artist_name = ""
+                track_title = artist_title_div.get_text(strip=True)
+
+            # Streams principaux et total
+            streams = self.parse_number(tds[6].get_text())
+            streams_change = self.parse_number(tds[7].get_text()) if len(tds) > 7 else 0.0
+            total = self.parse_number(tds[-1].get_text()) if len(tds) >= 11 else streams
+
+            track = CountryTrack(
+                position=i+1,
+                artist=artist_name,
+                title=track_title,
+                streams=streams,
+                streams_change=streams_change,
+                total=total
+            )
+            tracks.append(track)
+
+        return tracks
+
 
 
 

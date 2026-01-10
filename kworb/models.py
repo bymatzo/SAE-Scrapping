@@ -18,3 +18,13 @@ class Artist:
         self.streams_en_featuring = streams_en_featuring
         self.tracks = tracks or []  # liste de Track
 
+class CountryTrack:
+    def __init__(self, position: int, artist: str, title: str, streams: float, streams_change: float = 0.0, total: float = 0.0):
+        self.position = position
+        self.artist = artist
+        self.title = title
+        self.streams = streams          # streams du jour/semaine
+        self.streams_change = streams_change  # + ou - par rapport au précédent
+        self.total = total              # total cumulé
+
+

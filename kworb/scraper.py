@@ -12,11 +12,16 @@ class KworbScraper:
         })
 
     def get_page(self, path: str = "/") -> BeautifulSoup:
-        url = self.base_url + path
-        response = self.session.get(url)
+        # Si path est déjà une URL absolue, on l'utilise telle quelle
+        if path.startswith("http://") or path.startswith("https://"):
+            url = path
+        else:
+            url = self.base_url.rstrip("/") + "/" + path.lstrip("/")
 
+        response = self.session.get(url)
         if response.status_code != 200:
             raise Exception(f"Erreur HTTP {response.status_code} : {url}")
 
         return BeautifulSoup(response.text, "html.parser")
+
 
