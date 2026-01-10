@@ -213,6 +213,50 @@ class KworbNavigator:
             tracks.append(track)
 
         return tracks
+    
+    def get_itunes_points(self, artists: list):
+        """
+        Récupère les points par plateforme depuis https://kworb.net/itunes/
+        et les associe aux objets Artist existants.
+        """
+        url = "https://kworb.net/itunes/"
+        soup = self.scraper.get_page(url)
+        if soup is None:
+            return
+
+        tbody = soup.find("tbody")
+        if not tbody:
+            return
+
+        for tr in tbody.find_all("tr"):
+            tds = tr.find_all("td")
+            if len(tds) < 12:
+                continue
+
+            a_tag = tds[2].find("a", href=True)
+            if not a_tag:
+                continue
+
+            artist_name = a_tag.get_text(strip=True)
+
+            # On récupère les points par plateforme
+            itunes_points = {
+                "Total Points": int(tds[3].get_text(strip=True).replace(",", "")),
+                "Apple Music": int(tds[4].get_text(strip=True).replace(",", "")),
+                "Spotify": int(tds[5].get_text(strip=True).replace(",", "")),
+                "iTunes": int(tds[6].get_text(strip=True).replace(",", "")),
+                "YouTube": int(tds[7].get_text(strip=True).replace(",", "")),
+                "Shazam": int(tds[8].get_text(strip=True).replace(",", "")),
+                "Deezer": int(tds[9].get_text(strip=True).replace(",", "")),
+                "Top Country": tds[10].get_text(strip=True)
+            }
+
+            # On associe les points à l'artiste correspondant
+            for artist in artists:
+                if artist.name.lower() == artist_name.lower():
+                    artist.itunes_points = itunes_points
+                    break
+
 
 
 

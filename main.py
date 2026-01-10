@@ -62,6 +62,21 @@ for country in countries[:3]:
     for track in weekly_tracks[:5]:
         print(f"{track.position}. {track.artist} - {track.title} | Streams: {track.streams:,} | Total: {track.total:,}")
 
+# Après avoir récupéré les artistes depuis Spotify
+artists = navigator.get_artists_from_spotify()
+
+# On complète avec les points iTunes / plateformes
+navigator.get_itunes_points(artists)
+
+# Affichage exemple pour le 1er artiste
+artist = artists[0]
+print(f"\n=== {artist.name} ===")
+print(f"Total streams: {artist.streams_total}")
+print(f"Streams daily: {artist.streams_daily}")
+print("Points par plateforme:")
+for platform, points in artist.itunes_points.items():
+    print(f"{platform}: {points}")
+
 
 
 
