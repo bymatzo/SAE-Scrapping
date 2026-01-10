@@ -1,5 +1,6 @@
 from kworb.scraper import KworbScraper
 from kworb.navigator import KworbNavigator
+from kworb.export import export_artists_csv, export_tracks_csv, export_country_tracks_csv
 
 # 1 Initialisation du scraper et du navigateur
 scraper = KworbScraper()
@@ -77,6 +78,25 @@ print("Points par plateforme:")
 for platform, points in artist.itunes_points.items():
     print(f"{platform}: {points}")
 
+
+
+
+
+
+# Après avoir récupéré les artistes et leurs points iTunes
+export_artists_csv(artists)
+export_tracks_csv(artists)
+
+# Pour les top tracks pays
+countries_top_tracks = []
+for country in countries[:3]:
+    daily_tracks = navigator.get_top_tracks_for_country(country['daily_link'], top_n=100) if country['daily_link'] else []
+    weekly_tracks = navigator.get_top_tracks_for_country(country['weekly_link'], top_n=100) if country['weekly_link'] else []
+
+    countries_top_tracks.append({"country_name": country["name"], "type": "daily", "tracks": daily_tracks})
+    countries_top_tracks.append({"country_name": country["name"], "type": "weekly", "tracks": weekly_tracks})
+
+export_country_tracks_csv(countries_top_tracks)
 
 
 
