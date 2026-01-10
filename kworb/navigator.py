@@ -161,20 +161,30 @@ class KworbNavigator:
         """
         Récupère les top tracks pour un pays sur la page Daily ou Weekly
         - table_id: 'spotifydaily' ou 'spotifyweekly'
+        - Protège contre les liens cassés ou pages absentes
         """
-        soup = self.scraper.get_page(url)
+        tracks = []
+
+        if not url:
+            return tracks
+
+        try:
+            soup = self.scraper.get_page(url)
+        except Exception as e:
+            print(f"Erreur lors de l'accès à {url} : {e}")
+            return tracks  # retourne liste vide si problème HTTP
+
         if soup is None:
-            return []
+            return tracks
 
         table = soup.find("table", id=table_id)
         if not table:
-            return []
+            return tracks
 
         tbody = table.find("tbody")
         if not tbody:
-            return []
+            return tracks
 
-        tracks = []
         for i, tr in enumerate(tbody.find_all("tr")):
             if i >= top_n:
                 break
@@ -213,6 +223,7 @@ class KworbNavigator:
             tracks.append(track)
 
         return tracks
+
     
     def get_itunes_points(self, artists: list):
         """

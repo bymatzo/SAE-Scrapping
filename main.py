@@ -89,7 +89,7 @@ export_tracks_csv(artists)
 
 # Pour les top tracks pays
 countries_top_tracks = []
-for country in countries[:3]:
+for country in countries:
     daily_tracks = navigator.get_top_tracks_for_country(country['daily_link'], top_n=100) if country['daily_link'] else []
     weekly_tracks = navigator.get_top_tracks_for_country(country['weekly_link'], top_n=100) if country['weekly_link'] else []
 
