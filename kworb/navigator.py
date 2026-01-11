@@ -1,5 +1,6 @@
 # kworb/navigator.py
-
+import time
+import random
 from kworb.models import Artist, Track, CountryTrack
 
 
@@ -34,7 +35,7 @@ class KworbNavigator:
             return []
 
         for i, tr in enumerate(tbody.find_all("tr")):
-            if i >= 200:  # limite à 200 artistes
+            if i >= 50:  # limite à 100 artistes
                 break
 
             tds = tr.find_all("td")
@@ -78,7 +79,7 @@ class KworbNavigator:
         countries = []
 
         for i, tr in enumerate(soup.find_all("tr")):
-            if i >= 50:  # limite à 50 pays
+            if i >= 35:  # limite à 35 pays
                 break
 
             tds = tr.find_all("td", class_="mp text")
@@ -115,27 +116,40 @@ class KworbNavigator:
         return countries
 
 
-
-
     def get_tracks_from_artist(self, artist_url: str):
-        """Récupère les titres et leurs streams d'une page artiste"""
-        soup = self.scraper.get_page(artist_url)
+        """
+        Récupère les titres et leurs streams depuis une page artiste Kworb
+        - Limite à 50 tracks
+        - Temporisation anti-scraping
+        - Gestion des erreurs réseau
+        """
+
+        # ⏳ Pause aléatoire pour éviter le blocage (TRÈS IMPORTANT)
+        time.sleep(random.uniform(5, 10))
+
+        try:
+            soup = self.scraper.get_page(artist_url)
+        except Exception as e:
+            print(f"[SKIP ARTIST] {artist_url} → {e}")
+            return []
+
         if soup is None:
             return []
 
         tracks = []
 
-        # Trouve la table des tracks par sa classe
+        # Table des tracks
         table = soup.find("table", class_="addpos sortable")
         if not table:
-            return []  # si table non trouvée, on retourne liste vide
+            print(f"[NO TABLE] {artist_url}")
+            return []
 
         tbody = table.find("tbody")
         if not tbody:
             return []
 
         for i, tr in enumerate(tbody.find_all("tr")):
-            if i >= 100:  # limite à 100 tracks
+            if i >= 50:
                 break
 
             tds = tr.find_all("td")
@@ -147,15 +161,26 @@ class KworbNavigator:
                 continue
 
             title = a_tag.get_text(strip=True).replace("*", "").strip()
-            link = a_tag["href"]
+            link = a_tag["href"].strip()
 
-            streams_total = self.parse_number(tds[1].get_text())
-            streams_daily = self.parse_number(tds[2].get_text())
+            try:
+                streams_total = self.parse_number(tds[1].get_text())
+                streams_daily = self.parse_number(tds[2].get_text())
+            except Exception:
+                streams_total = 0
+                streams_daily = 0
 
-            track = Track(title=title, link=link, streams_total=streams_total, streams_daily=streams_daily)
+            track = Track(
+                title=title,
+                link=link,
+                streams_total=streams_total,
+                streams_daily=streams_daily
+            )
+
             tracks.append(track)
 
         return tracks
+
     
     def get_top_tracks_for_country(self, url: str, top_n: int = 100, table_id: str = "spotifydaily"):
         """
