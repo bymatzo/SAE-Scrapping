@@ -1,9 +1,15 @@
 import requests
+import time
+import random
 from bs4 import BeautifulSoup
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
+
 
 class KworbScraper:
     def __init__(self, base_url: str = "https://kworb.net"):
         self.base_url = base_url
+
         self.session = requests.Session()
         self.session.headers.update({
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
@@ -11,17 +17,35 @@ class KworbScraper:
             "Accept": "text/html,application/xhtml+xml"
         })
 
+        retries = Retry(
+            total=5,
+            backoff_factor=1.5,
+            status_forcelist=[429, 500, 502, 503, 504],
+            allowed_methods=["GET"]
+        )
+
+        adapter = HTTPAdapter(max_retries=retries)
+        self.session.mount("http://", adapter)
+        self.session.mount("https://", adapter)
+
     def get_page(self, path: str = "/") -> BeautifulSoup:
-        # Si path est déjà une URL absolue, on l'utilise telle quelle
         if path.startswith("http://") or path.startswith("https://"):
             url = path
         else:
             url = self.base_url.rstrip("/") + "/" + path.lstrip("/")
 
-        response = self.session.get(url)
-        if response.status_code != 200:
-            raise Exception(f"Erreur HTTP {response.status_code} : {url}")
+        # ⏱️ pause anti-ban (TRÈS IMPORTANT)
+        time.sleep(random.uniform(0.8, 1.6))
+
+        try:
+            response = self.session.get(url, timeout=15)
+            response.raise_for_status()
+        except requests.exceptions.RequestException as e:
+            print(f"⚠️ Erreur requête : {url}")
+            print(e)
+            return None
 
         return BeautifulSoup(response.text, "html.parser")
+
 
 
