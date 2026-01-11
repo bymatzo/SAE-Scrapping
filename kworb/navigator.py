@@ -24,6 +24,34 @@ class KworbNavigator:
 
         return float(value)
     
+    def parse_artist_streams(self, value: str) -> int:
+        """
+        Kworb artists table:
+        - ',' = milliards
+        - '.' = millions
+        Retourne un int
+        """
+        if value is None or value == "":
+            return 0
+
+        value = str(value).strip()
+        value = value.replace(" ", "").replace("\u202f", "").replace("\xa0", "")
+
+        try:
+            # milliards (ex: "1,2" → 1 200 000 000)
+            if "," in value and "." not in value:
+                return int(float(value.replace(",", ".")) * 1_000_000_000)
+
+            # millions (ex: "3.4" → 3 400 000)
+            if "." in value:
+                return int(float(value) * 1_000_000)
+
+            # nombre brut
+            return int(float(value))
+        except ValueError:
+            return 0
+
+    
     def get_artists_from_spotify(self):
         soup = self.scraper.get_page("/spotify/artists.html")
         if soup is None:
@@ -55,11 +83,12 @@ class KworbNavigator:
             artist = Artist(
                 name=name,
                 link=link,
-                streams_total=self.parse_number(tds[1].get_text()),
-                streams_daily=self.parse_number(tds[2].get_text()),
-                streams_en_tant_que_numero_un=self.parse_number(tds[3].get_text()),
-                streams_solo=self.parse_number(tds[4].get_text()),
-                streams_en_featuring=self.parse_number(tds[5].get_text()),
+                streams_total=self.parse_artist_streams(tds[1].get_text()),
+                streams_daily=self.parse_artist_streams(tds[2].get_text()),
+                streams_en_tant_que_numero_un=self.parse_artist_streams(tds[3].get_text()),
+                streams_solo=self.parse_artist_streams(tds[4].get_text()),
+                streams_en_featuring=self.parse_artist_streams(tds[5].get_text()),
+
                 tracks=tracks
             )
 
