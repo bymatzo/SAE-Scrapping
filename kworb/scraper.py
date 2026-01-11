@@ -45,7 +45,12 @@ class KworbScraper:
             print(e)
             return None
 
+        if response.text.strip() == "":
+            print("⚠️ Page vide – possible blocage")
+
         return BeautifulSoup(response.text, "html.parser")
+
+        
 
 
 
