@@ -34,11 +34,8 @@ class KworbScraper:
         else:
             url = self.base_url.rstrip("/") + "/" + path.lstrip("/")
 
-        # ⏱️ pause anti-ban (TRÈS IMPORTANT)
-        time.sleep(random.uniform(0.8, 1.6))
-
         try:
-            response = self.session.get(url, timeout=15)
+            response = self.session.get(url, timeout=5)
             response.raise_for_status()
         except requests.exceptions.RequestException as e:
             print(f"⚠️ Erreur requête : {url}")

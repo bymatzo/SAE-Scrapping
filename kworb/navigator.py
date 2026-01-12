@@ -63,7 +63,7 @@ class KworbNavigator:
             return []
 
         for i, tr in enumerate(tbody.find_all("tr")):
-            if i >= 50:  # limite à 100 artistes
+            if i >= 50:  # limite à 50 artistes
                 break
 
             tds = tr.find_all("td")
@@ -108,7 +108,7 @@ class KworbNavigator:
         countries = []
 
         for i, tr in enumerate(soup.find_all("tr")):
-            if i >= 35:  # limite à 35 pays
+            if i >= 30:  # limite à 35 pays
                 break
 
             tds = tr.find_all("td", class_="mp text")
@@ -153,9 +153,6 @@ class KworbNavigator:
         - Gestion des erreurs réseau
         """
 
-        # ⏳ Pause aléatoire pour éviter le blocage (TRÈS IMPORTANT)
-        time.sleep(random.uniform(5, 10))
-
         try:
             soup = self.scraper.get_page(artist_url)
         except Exception as e:
@@ -178,7 +175,7 @@ class KworbNavigator:
             return []
 
         for i, tr in enumerate(tbody.find_all("tr")):
-            if i >= 50:
+            if i >= 20:
                 break
 
             tds = tr.find_all("td")
@@ -213,9 +210,7 @@ class KworbNavigator:
     
     def get_top_tracks_for_country(self, url: str, top_n: int = 100, table_id: str = "spotifydaily"):
         """
-        Récupère les top tracks pour un pays sur la page Daily ou Weekly
-        - table_id: 'spotifydaily' ou 'spotifyweekly'
-        - Protège contre les liens cassés ou pages absentes
+        Récupère les top tracks Spotify Daily ou Weekly (Kworb)
         """
         tracks = []
 
@@ -225,14 +220,23 @@ class KworbNavigator:
         try:
             soup = self.scraper.get_page(url)
         except Exception as e:
-            print(f"Erreur lors de l'accès à {url} : {e}")
-            return tracks  # retourne liste vide si problème HTTP
+            print(f"⚠️ Erreur requête : {url}")
+            print(e)
+            return tracks
 
         if soup is None:
             return tracks
 
-        table = soup.find("table", id=table_id)
+        # ✅ Daily → table avec ID
+        if table_id == "spotifydaily":
+            table = soup.find("table", id="spotifydaily")
+
+        # ✅ Weekly → table sans ID (classe seulement)
+        else:
+            table = soup.find("table", class_="sortable")
+
         if not table:
+            print(f"[NO TABLE] {url}")
             return tracks
 
         tbody = table.find("tbody")
@@ -244,39 +248,39 @@ class KworbNavigator:
                 break
 
             tds = tr.find_all("td")
-            if len(tds) < 7:  # minimum requis pour daily/weekly
+            if len(tds) < 7:
                 continue
 
-            # Récupération de l'artiste et titre
+            # Artiste + titre
             artist_title_div = tds[2].find("div")
             if not artist_title_div:
                 continue
 
-            # On prend le texte et on essaie de séparer artiste et titre
             links = artist_title_div.find_all("a")
-            if len(links) >= 2:
-                artist_name = links[0].get_text(strip=True)
-                track_title = links[1].get_text(strip=True)
-            else:
-                artist_name = ""
-                track_title = artist_title_div.get_text(strip=True)
+            artist_name = links[0].get_text(strip=True) if len(links) >= 1 else ""
+            track_title = links[1].get_text(strip=True) if len(links) >= 2 else ""
 
-            # Streams principaux et total
-            streams = self.parse_number(tds[6].get_text())
-            streams_change = self.parse_number(tds[7].get_text()) if len(tds) > 7 else 0.0
-            total = self.parse_number(tds[-1].get_text()) if len(tds) >= 11 else streams
+            try:
+                streams = self.parse_number(tds[6].get_text())
+                streams_change = self.parse_number(tds[7].get_text()) if len(tds) > 7 else 0
+                total = self.parse_number(tds[-1].get_text())
+            except Exception:
+                streams = streams_change = total = 0
 
             track = CountryTrack(
-                position=i+1,
+                position=i + 1,
                 artist=artist_name,
                 title=track_title,
                 streams=streams,
                 streams_change=streams_change,
                 total=total
             )
+
             tracks.append(track)
 
         return tracks
+
+
 
     
     def get_itunes_points(self, artists: list):
