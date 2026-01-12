@@ -26,10 +26,8 @@ class KworbNavigator:
     
     def parse_artist_streams(self, value: str) -> int:
         """
-        Kworb artists table:
-        - ',' = milliards
-        - '.' = millions
-        Retourne un int
+        Kworb - table ARTISTS uniquement
+        Toutes les valeurs sont en MILLIONS
         """
         if value is None or value == "":
             return 0
@@ -38,18 +36,11 @@ class KworbNavigator:
         value = value.replace(" ", "").replace("\u202f", "").replace("\xa0", "")
 
         try:
-            # milliards (ex: "1,2" → 1 200 000 000)
-            if "," in value and "." not in value:
-                return int(float(value.replace(",", ".")) * 1_000_000_000)
-
-            # millions (ex: "3.4" → 3 400 000)
-            if "." in value:
-                return int(float(value) * 1_000_000)
-
-            # nombre brut
-            return int(float(value))
+            numeric = float(value.replace(",", ""))
+            return int(numeric * 1_000_000)
         except ValueError:
             return 0
+
 
     
     def get_artists_from_spotify(self):
@@ -148,7 +139,7 @@ class KworbNavigator:
     def get_tracks_from_artist(self, artist_url: str):
         """
         Récupère les titres et leurs streams depuis une page artiste Kworb
-        - Limite à 50 tracks
+        - Limite à 30 tracks
         - Temporisation anti-scraping
         - Gestion des erreurs réseau
         """
@@ -175,7 +166,7 @@ class KworbNavigator:
             return []
 
         for i, tr in enumerate(tbody.find_all("tr")):
-            if i >= 20:
+            if i >= 30:
                 break
 
             tds = tr.find_all("td")

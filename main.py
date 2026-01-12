@@ -88,5 +88,8 @@ print("✅ Export country_tracks.csv terminé")
 print("\n🎉 SCRAPING TERMINÉ AVEC SUCCÈS")
 
 
+if __name__ == "__main__":
+    launch_tkinter_dashboard()
+
 
 
