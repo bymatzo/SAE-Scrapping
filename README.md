@@ -85,7 +85,7 @@ pip install pandas requests beautifulsoup4 os csv
 * **Traitement & Export** : Étudiant 2
 * **Visualisation & Interprétation** : Étudiant 3
 
-### 🔹 Détail par étudiant
+### Détail par étudiant
 
 * **Mateo** – *Visualisation & Interprétation*
 
