@@ -1,6 +1,6 @@
 # SAE Scrapping – Analyse des données Spotify (Kworb)
 
-## 📌 Description du projet
+## Description du projet
 
 Ce projet a pour objectif de **collecter, traiter et analyser des données Spotify** issues du site **Kworb** à l’aide de techniques de **web scraping** et de **traitement de données en Python**.
 
@@ -18,7 +18,7 @@ Les données récupérées (streams, classements, pays, type daily/weekly, artis
 
 ---
 
-## 🔁 Étapes pour reproduire le projet
+## Étapes pour reproduire le projet
 
 1. Récupérer le dossier "code" envoyer par mail.
 
@@ -34,7 +34,7 @@ Les données récupérées (streams, classements, pays, type daily/weekly, artis
 
 ---
 
-## 📚 Librairies utilisées
+## Librairies utilisées
 
 * **Python 3.8+**
 * `pandas` → manipulation et analyse des données
@@ -52,7 +52,7 @@ pip install pandas requests beautifulsoup4 os csv
 
 ---
 
-## ▶️ Instructions d’exécution
+## Instructions d’exécution
 
 1. Vérifier que Python est bien installé :
 
@@ -79,7 +79,7 @@ pip install pandas requests beautifulsoup4 os csv
 
 ---
 
-4. Répartition des responsabilités
+## Répartition des responsabilités
 
 * **Analyse & Extraction** : Étudiant 1
 * **Traitement & Export** : Étudiant 2
@@ -110,7 +110,7 @@ pip install pandas requests beautifulsoup4 os csv
 
 ---
 
-## ✅ Objectifs pédagogiques
+## Objectifs pédagogiques
 
 * Mise en œuvre du web scraping
 * Manipulation de données avec pandas
