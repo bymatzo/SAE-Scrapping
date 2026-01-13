@@ -1,6 +1,4 @@
 # kworb/navigator.py
-import time
-import random
 from kworb.models import Artist, Track, CountryTrack
 
 
