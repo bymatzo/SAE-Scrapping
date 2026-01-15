@@ -55,7 +55,6 @@ for index, country in enumerate(countries, start=1):
     print(f"Scraping -- {country_name} ({index}/{total_countries})")
 
 
-    # Pause anti-scraping (IMPORTANT)
     time.sleep(random.uniform(2.5, 4.5))
 
     daily_tracks = navigator.get_top_tracks_for_country(
