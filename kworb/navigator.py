@@ -97,7 +97,7 @@ class KworbNavigator:
         countries = []
 
         for i, tr in enumerate(soup.find_all("tr")):
-            if i >= 30:  # limite à 35 pays
+            if i >= 50:  # limite à 50 pays
                 break
 
             tds = tr.find_all("td", class_="mp text")
@@ -209,18 +209,18 @@ class KworbNavigator:
         try:
             soup = self.scraper.get_page(url)
         except Exception as e:
-            print(f"⚠️ Erreur requête : {url}")
+            print(f" !! Erreur requête : {url}")
             print(e)
             return tracks
 
         if soup is None:
             return tracks
 
-        # ✅ Daily → table avec ID
+        # Daily → table avec ID
         if table_id == "spotifydaily":
             table = soup.find("table", id="spotifydaily")
 
-        # ✅ Weekly → table sans ID (classe seulement)
+        # Weekly → table sans ID (classe seulement)
         else:
             table = soup.find("table", class_="sortable")
 

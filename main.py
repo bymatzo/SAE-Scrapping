@@ -10,38 +10,38 @@ from kworb.export import (
 )
 
 # =========================================
-# 1️⃣ Initialisation
+# 1 Initialisation
 # =========================================
 scraper = KworbScraper()
 navigator = KworbNavigator(scraper)
 
 # =========================================
-# 2️⃣ Récupération des pays Spotify
+# 2 Récupération des pays Spotify
 # =========================================
 countries = navigator.get_countries_from_spotify()
-print(f"✅ {len(countries)} pays récupérés")
+print(f"-- {len(countries)} pays récupérés")
 
 # =========================================
-# 3️⃣ Récupération des artistes Spotify
+# 3 Récupération des artistes Spotify
 # =========================================
 artists = navigator.get_artists_from_spotify()
-print(f"✅ {len(artists)} artistes récupérés")
+print(f"-- {len(artists)} artistes récupérés")
 
 # =========================================
-# 4️⃣ Récupération des points iTunes / plateformes
+# 4 Récupération des points iTunes / plateformes
 # =========================================
 navigator.get_itunes_points(artists)
-print("✅ Points plateformes récupérés")
+print("-- Points plateformes récupérés")
 
 # =========================================
-# 5️⃣ Export artistes & tracks artistes
+# 5 Export artistes & tracks artistes
 # =========================================
 export_artists_csv(artists)
 export_tracks_csv(artists)
-print("✅ Exports artists.csv et tracks.csv terminés")
+print("-- Exports artists.csv et tracks.csv terminés")
 
 # =========================================
-# 6️⃣ Top tracks par pays (Daily & Weekly)
+# 6 Top tracks par pays (Daily & Weekly)
 # =========================================
 countries_top_tracks = []
 
@@ -50,9 +50,9 @@ for country in countries:
     daily_link = country.get("daily_link")
     weekly_link = country.get("weekly_link")
 
-    print(f"🌍 Scraping {country_name}")
+    print(f"Scraping -- {country_name}")
 
-    # ⏳ Pause anti-scraping (IMPORTANT)
+    # Pause anti-scraping (IMPORTANT)
     time.sleep(random.uniform(2.5, 4.5))
 
     daily_tracks = navigator.get_top_tracks_for_country(
@@ -80,12 +80,12 @@ for country in countries:
     })
 
 # =========================================
-# 7️⃣ Export top tracks pays
+# 7 Export top tracks pays
 # =========================================
 export_country_tracks_csv(countries_top_tracks)
-print("✅ Export country_tracks.csv terminé")
+print("-- Export country_tracks.csv terminé")
 
-print("\n🎉 SCRAPING TERMINÉ AVEC SUCCÈS")
+print("\n SCRAPING TERMINÉ AVEC SUCCÈS !!")
 
 
 

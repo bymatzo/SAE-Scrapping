@@ -36,12 +36,12 @@ class KworbScraper:
             response = self.session.get(url, timeout=5)
             response.raise_for_status()
         except requests.exceptions.RequestException as e:
-            print(f"⚠️ Erreur requête : {url}")
+            print(f"!! Erreur requête : {url}")
             print(e)
             return None
 
         if response.text.strip() == "":
-            print("⚠️ Page vide – possible blocage")
+            print("!! Page vide - possible blocage")
 
         return BeautifulSoup(response.text, "html.parser")
 
