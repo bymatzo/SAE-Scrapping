@@ -45,12 +45,15 @@ print("-- Exports artists.csv et tracks.csv terminés")
 # =========================================
 countries_top_tracks = []
 
-for country in countries:
+total_countries = len(countries)
+
+for index, country in enumerate(countries, start=1):
     country_name = country["name"]
     daily_link = country.get("daily_link")
     weekly_link = country.get("weekly_link")
 
-    print(f"Scraping -- {country_name}")
+    print(f"Scraping -- {country_name} ({index}/{total_countries})")
+
 
     # Pause anti-scraping (IMPORTANT)
     time.sleep(random.uniform(2.5, 4.5))
