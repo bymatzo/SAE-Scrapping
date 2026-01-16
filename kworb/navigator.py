@@ -97,7 +97,7 @@ class KworbNavigator:
         countries = []
 
         for i, tr in enumerate(soup.find_all("tr")):
-            if i >= 50:  # limite à 50 pays
+            if i >= 80:  # limite à 50 pays
                 break
 
             tds = tr.find_all("td", class_="mp text")
