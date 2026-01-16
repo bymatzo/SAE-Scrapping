@@ -47,7 +47,10 @@ Les données récupérées (streams, classements, pays, type daily/weekly, artis
 Installation des librairies nécessaires :
 
 ```bash
-pip install pandas requests beautifulsoup4 os csv
+pip install requests 
+pip install beautifulsoup4 
+pip install os 
+pip install csv
 ```
 
 ---
