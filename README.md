@@ -26,9 +26,9 @@ Les données récupérées (streams, classements, pays, type daily/weekly, artis
 
 3. Lancer le script principal :
 
-   ```bash
-   python main.py
-   ```
+  Ouvrir le dossier "code" dans un IDE.
+
+  Lancer le fichier "main.py".
 
 5. Une fois toutes les données charger 3 fichiers csv sont créer dans le dossier code sous le nom : export_csv.
 
