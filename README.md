@@ -20,7 +20,7 @@ Les données récupérées (streams, classements, pays, type daily/weekly, artis
 
 ## Étapes pour reproduire le projet
 
-1. Récupérer le dossier "code" envoyer par mail.
+1. Récupérer le dossier "Dossier final" envoyer par mail et bien le copier dans C:/ pour l'utilisation du PowerBI.
 
 2. Installer les dépendances Python (voir section librairies).
 
