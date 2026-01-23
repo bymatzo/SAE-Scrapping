@@ -61,24 +61,27 @@ pip install beautifulsoup4
    python --version
    ```
 
-2. Lancer le programme principal :
+2. Lancer le programme principal depuis un ide :
 
    ```bash
    python main.py
    ```
+3. Lancer le programme principal :
 
-3. Fonctionnalités disponibles dans le rendu PowerBI :
+  Une fois le code bien executer, un dossier "export_csv" sera disponible dans le meme repertoire de que le dossier du projet avec toutes les données récupérées.
+
+4. Fonctionnalités disponibles dans le rendu PowerBI :
 
    * Sélection du pays
    * Choix du type (Daily / Weekly)
    * Choix de la métrique (streams / total)
    * Sélection du Top N
-   * Affichage de statistiques (total, moyenne, médiane)
    * Visualisation graphique (bar chart)
-   * Export d’un résumé statistique en fichier `.txt`
    * Export CSV pour Power BI
 
 ---
+
+Si les données PowerBI ne s'affiche pas, veuillez vous référez à la vidéo expliquant comment bien importer les données dans le PowerBi.
 
 ## Répartition des responsabilités
 
