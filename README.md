@@ -13,7 +13,6 @@ Les données récupérées (streams, classements, pays, type daily/weekly, artis
   * de filtrer par pays,
   * de choisir le type de classement (daily / weekly),
   * de sélectionner une métrique,
-  * d’afficher des statistiques descriptives,
   * de visualiser des graphiques,
 
 ---
@@ -66,7 +65,7 @@ pip install beautifulsoup4
    ```bash
    python main.py
    ```
-3. Lancer le programme principal :
+3. Récupérer les données :
 
   Une fois le code bien executer, un dossier "export_csv" sera disponible dans le meme repertoire de que le dossier du projet avec toutes les données récupérées.
 
